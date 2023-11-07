@@ -1,0 +1,7 @@
+.vscode
+CMakeFiles
+WidgetApp
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build
