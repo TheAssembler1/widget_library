@@ -11,15 +11,15 @@ namespace App {
 WindowManager::WindowManager(std::string title, int x, int y, int width, int height) 
     : window {std::unique_ptr<SDL_Window, SDLDestroyer>(SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_RESIZABLE))},
       renderer {std::unique_ptr<SDL_Renderer, SDLDestroyer>(SDL_CreateRenderer(window.get(), -1, 0))},
-      w_id {SDL_GetWindowID(window.get())} {
+      window_id {SDL_GetWindowID(window.get())} {
 
-    std::cout << "window {" << getW_Id() << "} created" << std::endl;
+    std::cout << "window {" << get_window_id() << "} created" << std::endl;
 }
 
 WindowManager::~WindowManager() {
-    std::cout << "window {" << getW_Id() << "} destroyed" << std::endl;
+    std::cout << "window {" << get_window_id() << "} destroyed" << std::endl;
     print();
-    deleteWidgetTree(root);
+    delete_widget_tree(root);
 }
 
 void WindowManager::render() {
@@ -27,7 +27,7 @@ void WindowManager::render() {
         SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer.get());
 
-        renderWidgetTree(root);
+        render_widget_tree(root);
 
         SDL_RenderPresent(renderer.get());
     }
@@ -51,8 +51,8 @@ int WindowManager::update(std::vector<SDL_Event> events, std::set<int>& del_wind
             case SDL_WINDOWEVENT:
                 switch (m_event.window.event) {
                     case SDL_WINDOWEVENT_CLOSE:
-                        if(m_event.window.windowID == getW_Id() ) {
-                            del_windows.insert(getW_Id());
+                        if(m_event.window.windowID == get_window_id() ) {
+                            del_windows.insert(get_window_id());
                         }
                         break;
                     default:
@@ -65,16 +65,16 @@ int WindowManager::update(std::vector<SDL_Event> events, std::set<int>& del_wind
     }
 
     if(root) {
-        updateWidgetTree(root);
+        update_widget_tree(root);
     }
 
     return -1;
 }
 
-void WindowManager::deleteWidgetTree(Widgets::BaseWidget const* widget) {
+void WindowManager::delete_widget_tree(Widgets::BaseWidget const* widget) {
     if(widget) {
         for(Widgets::BaseWidget const* child: widget->children) {
-            deleteWidgetTree(child);
+            delete_widget_tree(child);
         }
 
         delete widget;
@@ -82,32 +82,32 @@ void WindowManager::deleteWidgetTree(Widgets::BaseWidget const* widget) {
     }
 }
 
-void WindowManager::updateWidgetTree(Widgets::BaseWidget* widget) { 
+void WindowManager::update_widget_tree(Widgets::BaseWidget* widget) { 
     if(widget) {
         widget->update();
         for(Widgets::BaseWidget* child: widget->children) {
-            updateWidgetTree(child);
+            update_widget_tree(child);
         }
     }
 }
 
-void WindowManager::renderWidgetTree(Widgets::BaseWidget const* widget) {
+void WindowManager::render_widget_tree(Widgets::BaseWidget const* widget) {
     if(widget && renderer) {
         widget->render(renderer.get());
         for(Widgets::BaseWidget const* child: widget->children) {
-            renderWidgetTree(child);
+            render_widget_tree(child);
         }
     }
 }
 
-void WindowManager::printWidgetTree(Widgets::BaseWidget const* widget, int level) {
+void WindowManager::print_widget_tree(Widgets::BaseWidget const* widget, int level) {
     if(widget) {
         for(int i = 0; i < level; i++) {
             std::cout << "\t";
         }
         std::cout << *widget << std::endl;
         for(Widgets::BaseWidget const* child: widget->children) {
-            printWidgetTree(child, level + 1);
+            print_widget_tree(child, level + 1);
         }
     }
 }

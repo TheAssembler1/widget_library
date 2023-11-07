@@ -10,14 +10,14 @@
 
 namespace App {
 
-void Manager::initApp() {
+void Manager::init_app() {
     assert(SDL_Init(SDL_INIT_VIDEO) <= 0);
     std::cout << "succesfully initialized SDL2 with flags: " << SDL_INIT_VIDEO << std::endl;
 }
 
-Manager& Manager::addWindowManager(App::WindowManager* windowManager) {
-    std::cout << "window {" << windowManager->getW_Id() << "} added to manager" << std::endl;
-    windowManagers.insert({windowManager->getW_Id(), windowManager});
+Manager& Manager::addWindowManager(App::WindowManager* window_manager) {
+    std::cout << "window {" << window_manager->get_window_id() << "} added to manager" << std::endl;
+    multi_window_manager.insert({window_manager->get_window_id(), window_manager});
 
     return *this;
 }
@@ -31,12 +31,12 @@ void Manager::run() {
 
 
         std::vector<SDL_Event> events;
-        pollEvents(running, events);
+        poll_events(running, events);
 
         // NOTE: mark windows for deletion
         std::set<int> del_windows;
 
-        for(auto manager_key_pair: windowManagers) {
+        for(auto manager_key_pair: multi_window_manager) {
             manager_key_pair.second->render(); 
             manager_key_pair.second->update(events, del_windows);
         }
@@ -45,19 +45,19 @@ void Manager::run() {
         
         std::set<int>::const_iterator del_win_iter = del_windows.cbegin();
         while(del_win_iter != del_windows.cend()) {
-            App::WindowManager* win = windowManagers[*del_win_iter];
+            App::WindowManager* win = multi_window_manager[*del_win_iter];
             delete win;
-            windowManagers.erase(*del_win_iter);
+            multi_window_manager.erase(*del_win_iter);
             del_win_iter = del_windows.erase(del_win_iter);
         }
 
-        if(windowManagers.size() <= 0) {
+        if(multi_window_manager.size() <= 0) {
             running = false;
         }
     }
 }
 
-void Manager::pollEvents(bool& running, std::vector<SDL_Event>& events) {
+void Manager::poll_events(bool& running, std::vector<SDL_Event>& events) {
     SDL_Event m_event;
     while(SDL_PollEvent(&m_event)) {
         events.push_back(m_event);

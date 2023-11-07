@@ -7,17 +7,17 @@ namespace App {
 
 class Manager {
     public:
-        void initApp();
-        void pollEvents(bool& running, std::vector<SDL_Event>& events);
+        void init_app();
+        void poll_events(bool& running, std::vector<SDL_Event>& events);
         void run();
-        Manager& addWindowManager(App::WindowManager* windowManager);
+        Manager& addWindowManager(App::WindowManager* window_manager);
     
     ~Manager() { 
         SDL_Quit();
     }
 
     private:
-        std::unordered_map<int, App::WindowManager*> windowManagers;
+        std::unordered_map<int, App::WindowManager*> multi_window_manager;
 };
 
 }

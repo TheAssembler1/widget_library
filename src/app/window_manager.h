@@ -43,28 +43,18 @@ struct SDLDestroyer
     }
 };
 
-
-
 class WindowManager {
     public: 
         WindowManager(std::string title, int x, int y, int width, int height);
         ~WindowManager();
-        void initRootWidget(Widgets::BaseWidget* widget) {
-            root = widget;
-        }
+        void init_root_widget(Widgets::BaseWidget* widget) { root = widget; }
 
-        int update(std::vector<SDL_Event> events, std::set<int>& del_winodws);
+        int update(std::vector<SDL_Event> events, std::set<int>& del_windows);
         void render();
 
-        void print() {
-            if(root) {
-                printWidgetTree(root, 0);
-            }
-        }
+        void print() { if(root) { print_widget_tree(root, 0); } }
 
-        Uint32 getW_Id() {
-            return w_id;
-        }
+        Uint32 get_window_id() { return window_id; }
 
         bool is_window_fullscreen_flag() { return IS_WINDOW_FULLSCREEN(window.get()); }
         bool is_window_fullscreen_desktop_flag() { return IS_WINDOW_FULLSCREEN_DESKTOP(window.get()); }
@@ -89,17 +79,17 @@ class WindowManager {
         bool is_window_popup_screen_flag() { return IS_WINDOW_POPUP_SCREEN(window.get()); }
 
     private:
-        void updateWidgetTree(Widgets::BaseWidget* widget);
-        void renderWidgetTree(Widgets::BaseWidget const* widget);
-        void printWidgetTree(Widgets::BaseWidget const* widget, int level);
-        void deleteWidgetTree(Widgets::BaseWidget const* widget);
+        void update_widget_tree(Widgets::BaseWidget* widget);
+        void render_widget_tree(Widgets::BaseWidget const* widget);
+        void print_widget_tree(Widgets::BaseWidget const* widget, int level);
+        void delete_widget_tree(Widgets::BaseWidget const* widget);
 
         std::unique_ptr<SDL_Window, SDLDestroyer> window;
         std::unique_ptr<SDL_Renderer, SDLDestroyer> renderer;
         Widgets::BaseWidget* root = nullptr;
 
         // NOTE: SDL2 window id
-        Uint32 w_id = 0;
+        Uint32 window_id = 0;
 };
 
 }
