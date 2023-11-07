@@ -27,18 +27,13 @@ void Manager::run() {
     bool running = true;
 
     while(running) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
-
-
         std::vector<SDL_Event> events;
-        poll_events(running, events);
-
-        // NOTE: mark windows for deletion
         std::set<int> del_windows;
+        poll_events(running, events, del_windows);
 
         for(auto manager_key_pair: multi_window_manager) {
             manager_key_pair.second->render(); 
-            manager_key_pair.second->update(events, del_windows);
+            manager_key_pair.second->update(events);
         }
         
         events.clear();
@@ -57,10 +52,36 @@ void Manager::run() {
     }
 }
 
-void Manager::poll_events(bool& running, std::vector<SDL_Event>& events) {
+void Manager::poll_events(bool& running, std::vector<SDL_Event>& events, std::set<int>& del_windows) {
     SDL_Event m_event;
+    App::WindowManager* win_manager = nullptr; 
     while(SDL_PollEvent(&m_event)) {
-        events.push_back(m_event);
+        switch (m_event.type) {
+            case SDL_WINDOWEVENT:
+                win_manager = multi_window_manager[m_event.window.windowID];
+
+                switch (m_event.window.event) {
+                    case SDL_WINDOWEVENT_CLOSE:
+                        win_manager->window_close_event(del_windows);
+                        break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        win_manager->window_resized_event(m_event.window.data1, m_event.window.data2);
+                        break;
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        win_manager->window_size_changed_event();
+                        break;
+                    case SDL_WINDOWEVENT_MOVED:
+                        win_manager->window_moved_event(m_event.window.data1, m_event.window.data2);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                // FIXME: need to match event with window that has focus
+                events.push_back(m_event);
+                break;
+        }
     }
 }
 
