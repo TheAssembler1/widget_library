@@ -13,6 +13,13 @@ WindowManager::WindowManager(std::string title, int x, int y, int width, int hei
       renderer {std::unique_ptr<SDL_Renderer, SDLDestroyer>(SDL_CreateRenderer(window.get(), -1, 0))},
       window_id {static_cast<int>(SDL_GetWindowID(window.get()))} {
 
+    if(!window) {
+        std::cerr << "failed to create window" << std::endl;
+    }
+
+    if(!renderer) {
+        std::cerr << "failed to create renderer" << std::endl;
+    }
     
     SDL_GetWindowSize(window.get(), &window_width, &window_height);
     SDL_GetWindowPosition(window.get(), &window_x, &window_y);

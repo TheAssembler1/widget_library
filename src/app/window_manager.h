@@ -35,11 +35,13 @@ struct SDLDestroyer
     void operator()(SDL_Window* w) const
     {
         SDL_DestroyWindow(w);
+        w = nullptr;
     }
 
     void operator()(SDL_Renderer* w) const
     {
         SDL_DestroyRenderer(w);
+        w = nullptr;
     }
 };
 

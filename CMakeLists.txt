@@ -9,5 +9,6 @@ find_package(SDL2 REQUIRED)
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 
+set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})

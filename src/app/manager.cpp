@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <thread>
 #include <set>
+#include <cassert>
 #include "window_manager.h"
 #include "manager.h"
 
@@ -27,8 +28,11 @@ void Manager::run() {
     bool running = true;
 
     while(running) {
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+
         std::vector<SDL_Event> events;
         std::set<int> del_windows;
+
         poll_events(running, events, del_windows);
 
         for(auto manager_key_pair: multi_window_manager) {
@@ -40,9 +44,13 @@ void Manager::run() {
         
         std::set<int>::const_iterator del_win_iter = del_windows.cbegin();
         while(del_win_iter != del_windows.cend()) {
-            App::WindowManager* win = multi_window_manager[*del_win_iter];
-            delete win;
-            multi_window_manager.erase(*del_win_iter);
+            int win_id = *del_win_iter;
+
+            auto it = multi_window_manager.find(win_id);
+            assert (it != multi_window_manager.end());
+            delete it->second;
+            multi_window_manager.erase(it);
+
             del_win_iter = del_windows.erase(del_win_iter);
         }
 
@@ -55,10 +63,16 @@ void Manager::run() {
 void Manager::poll_events(bool& running, std::vector<SDL_Event>& events, std::set<int>& del_windows) {
     SDL_Event m_event;
     App::WindowManager* win_manager = nullptr; 
+    std::unordered_map<int, App::WindowManager*>::iterator it;
     while(SDL_PollEvent(&m_event)) {
         switch (m_event.type) {
             case SDL_WINDOWEVENT:
-                win_manager = multi_window_manager[m_event.window.windowID];
+                it = multi_window_manager.find(static_cast<int>(m_event.window.windowID));
+                if(it == multi_window_manager.end()) {
+                    continue;
+                } else {
+                    win_manager = multi_window_manager[m_event.window.windowID];
+                }
 
                 switch (m_event.window.event) {
                     case SDL_WINDOWEVENT_CLOSE:
