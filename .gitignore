@@ -1,4 +1,5 @@
 .vscode
+.vs
 CMakeFiles
 WidgetApp
 CMakeCache.txt
