@@ -50,9 +50,9 @@ void WindowManager::update(std::vector<SDL_Event> events) {
     }
 }
 
-void WindowManager::delete_widget_tree(Widgets::BaseWidget const* widget) {
+void WindowManager::delete_widget_tree(Widget::BaseWidget const* widget) {
     if(widget) {
-        for(Widgets::BaseWidget const* child: widget->children) {
+        for(Widget::BaseWidget const* child: widget->children) {
             delete_widget_tree(child);
         }
 
@@ -61,31 +61,34 @@ void WindowManager::delete_widget_tree(Widgets::BaseWidget const* widget) {
     }
 }
 
-void WindowManager::update_widget_tree(Widgets::BaseWidget* const widget) { 
+void WindowManager::update_widget_tree(Widget::BaseWidget* const widget) { 
     if(widget) {
         widget->update();
-        for(Widgets::BaseWidget* child: widget->children) {
+        for(Widget::BaseWidget* child: widget->children) {
             update_widget_tree(child);
         }
     }
 }
 
-void WindowManager::render_widget_tree(Widgets::BaseWidget const* const widget) const {
+void WindowManager::render_widget_tree(Widget::BaseWidget const* const widget) const {
     if(widget && renderer) {
         widget->render(renderer.get());
-        for(Widgets::BaseWidget const* child: widget->children) {
+        for(Widget::BaseWidget const* child: widget->children) {
             render_widget_tree(child);
         }
     }
 }
 
-void WindowManager::print_widget_tree(Widgets::BaseWidget const* const widget, int level) const {
+void WindowManager::print_widget_tree(Widget::BaseWidget const* const widget, int level) const {
     if(widget) {
         for(int i = 0; i < level; i++) {
             std::cout << "\t";
         }
-        std::cout << *widget << std::endl;
-        for(Widgets::BaseWidget const* child: widget->children) {
+
+        widget->toStringPrint();
+        std::cout << std::endl;
+
+        for(Widget::BaseWidget const* child: widget->children) {
             print_widget_tree(child, level + 1);
         }
     }

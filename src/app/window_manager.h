@@ -4,7 +4,7 @@
 #include <memory>
 #include <set>
 #include <SDL.h>
-#include "../widgets/base_widget.h"
+#include "../widget/base_widget.h"
 
 #define IS_WINDOW_FULLSCREEN(x) SDL_GetWindowFlags(x) & SDL_WINDOW_FULLSCREEN
 #define IS_WINDOW_FULLSCREEN_DESKTOP(x) SDL_GetWindowFlags(x) & SDL_WINDOW_FULLSCREEN_DESKTOP
@@ -49,7 +49,7 @@ class WindowManager {
     public: 
         WindowManager(std::string title, int x, int y, int width, int height);
         ~WindowManager();
-        void init_root_widget(Widgets::BaseWidget* const widget) { root = widget; }
+        void init_root_widget(Widget::BaseWidget* const widget) { root = widget; }
 
         void update(std::vector<SDL_Event> events);
         void render() const;
@@ -104,10 +104,10 @@ class WindowManager {
 
         friend std::ostream& operator<<(std::ostream& out, const WindowManager& window_manager);
     private:
-        void update_widget_tree(Widgets::BaseWidget* const widget);
-        void render_widget_tree(Widgets::BaseWidget const* const widget) const;
-        void print_widget_tree(Widgets::BaseWidget const* const widget, int level) const;
-        void delete_widget_tree(Widgets::BaseWidget const* const widget);
+        void update_widget_tree(Widget::BaseWidget* const widget);
+        void render_widget_tree(Widget::BaseWidget const* const widget) const;
+        void print_widget_tree(Widget::BaseWidget const* const widget, int level) const;
+        void delete_widget_tree(Widget::BaseWidget const* const widget);
 
         void manually_update_window_position() {
             SDL_GetWindowPosition(window.get(), &window_x, &window_y);
@@ -115,7 +115,7 @@ class WindowManager {
 
         std::unique_ptr<SDL_Window, SDLDestroyer> window;
         std::unique_ptr<SDL_Renderer, SDLDestroyer> renderer;
-        Widgets::BaseWidget* root = nullptr;
+        Widget::BaseWidget* root = nullptr;
 
         // NOTE: SDL2 window id
         int window_id = 0;

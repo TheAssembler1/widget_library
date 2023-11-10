@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Widgets{
+namespace Widget {
 
 struct Color {
     int red;

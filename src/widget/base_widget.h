@@ -3,18 +3,18 @@
 #include <ostream>
 #include <vector>
 #include <SDL.h>
-#include "transform.h"
+#include "attr/transform.h"
 
-namespace Widgets{
+namespace Widget {
 
 class BaseWidget : public Transform {
     public:
         BaseWidget(Transform transform) : Transform(transform) {}
-        void add(BaseWidget* widget) { children.push_back(widget); }
+        virtual void add(BaseWidget* widget) { children.push_back(widget); }
 
         virtual void render(SDL_Renderer* renderer) const {};
         virtual void update() {};
-        friend std::ostream& operator<< (std::ostream& out, const BaseWidget& widget);
+        virtual void toStringPrint () const;
 
         std::vector<BaseWidget*> children;
 };
