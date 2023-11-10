@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <set>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "../widgets/base_widget.h"
 
 #define IS_WINDOW_FULLSCREEN(x) SDL_GetWindowFlags(x) & SDL_WINDOW_FULLSCREEN

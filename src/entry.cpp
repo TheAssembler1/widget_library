@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include <SDL2/SDL.h>
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 #include <thread>
 #include <chrono> 
 #include <vector>
@@ -11,7 +12,7 @@
 #include "widgets/transform.h"
 #include "widgets/color.h"
 
-int main() {
+int main(int argc, const char* argv[]) {
     App::Manager manager;
     manager.init_app();
 
